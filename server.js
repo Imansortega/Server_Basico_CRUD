@@ -37,7 +37,10 @@ app.get("/Frutas/nombre/:nombre", singleNameSearch);
 // Filtro/Búsqueda parcial. Retorna todas las coincidencias
 app.get("/Frutas/parcial/:parcial", busquedaParcial);
 
-// Alta de documentos
+/* Alta de documentos. No hace falta poner id. La app pone el correcto.
+  En caso de poner id duplicado, da un warning. Si se pone id no duplicado no 
+  importa, pone el correcto
+*/
 app.post("/Frutas/alta", altaDoc);
 
 // Modifica precio en documentos individuales
