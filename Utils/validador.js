@@ -1,30 +1,36 @@
 module.exports = {
+  
+  // Valida que el solo haya caracteres alfabéticos
   validarTextInputs(query) {
     let ExpRegSoloLetras = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$";
     // Distinto de NULL, hay match ---> true !!
     if (query.match(ExpRegSoloLetras) != null) {
       return true;
-    } else {  
+    } else {
       return false;
     }
   },
+
+  // Valida que el solo haya numeros. Igual Postman no los admite
   validarNumberInputs(numero) {
     let ExpRegSoloNumeros = "^[0-9]+$";
-    if (numero.match(ExpRegSoloNumeros) != null) {  
+    if (numero.match(ExpRegSoloNumeros) != null) {
       return true;
     } else {
       return false;
     }
   },
-  
+
+  // DEtectar campos nulos
   detectarNull(busqueda) {
     if (busqueda != null) {
-      return true
+      return true;
     } else {
-      return false
+      return false;
     }
   },
 
+  // Valida rutas. No se usa
   validarRutas(ruta) {
     switch (ruta) {
       case "/":
@@ -46,7 +52,3 @@ module.exports = {
     return error;
   },
 };
-
-//module.exports = (validarRutas, validarTextInputs, validarNumberInputs)
-
-

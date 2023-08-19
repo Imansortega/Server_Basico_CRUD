@@ -1,3 +1,6 @@
+/* 
+  Controlador para las rutas definidas
+*/
 const validar = require("../Utils/validador");
 const check = require("../Utils/poneElId");
 
@@ -10,7 +13,7 @@ const uri = process.env.MONGODB_URISTRING;
 const { MongoClient, ObjectId } = require("mongodb");
 const client = new MongoClient(uri);
 
-// Mensaje de bienvenida
+// Mensaje de bienvenida para root
 async function casa(req, res) {
   res.send("Frutas para todos y todas!!");
 }
@@ -97,8 +100,9 @@ async function busquedaParcial(req, res) {
   }
 }
 
-// Modifica el precio de un documento solamente
+// Modifica solo el precio de un documento individual
 async function modificaDoc(req, res) {
+
   try {
     await client.connect();
     console.log("modificaDoc: Conexión exitosa a la BD !");
@@ -106,6 +110,7 @@ async function modificaDoc(req, res) {
     let newData = req.body;
     let importe = newData.importe;
 
+    // Control d nulos, indefinidos y campo numérico
     if (
       id == null ||
       importe == null ||
@@ -138,6 +143,7 @@ async function modificaDoc(req, res) {
 
 // Alta de un nuevo producto/documento
 async function altaDoc(req, res) {
+
   try {
     await client.connect();
     console.log("altaDoc: Conexión exitosa a la BD !");
@@ -167,10 +173,12 @@ async function altaDoc(req, res) {
       console.log("else");
       res.status(409).json("El id o nombre ya existen");
     }
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("altaDoc: Error al acceder la base");
     res.status(500).json({ error: "altaDoc: Error del servidor" });
-  } finally {
+  } 
+  finally {
     await client.close();
   }
 }
