@@ -1,6 +1,6 @@
 module.exports = {
   
-  // Valida que el solo haya caracteres alfabéticos
+  // Valida que solo haya caracteres alfabéticos
   validarTextInputs(query) {
     let ExpRegSoloLetras = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$";
     // Distinto de NULL, hay match ---> true !!
@@ -11,7 +11,7 @@ module.exports = {
     }
   },
 
-  // Valida que el solo haya numeros. Igual Postman no los admite
+  // Valida que solo haya numeros. Igual Postman no los admite
   validarNumberInputs(numero) {
     let ExpRegSoloNumeros = "^[0-9]+$";
     if (numero.match(ExpRegSoloNumeros) != null) {
@@ -21,7 +21,7 @@ module.exports = {
     }
   },
 
-  // DEtectar campos nulos
+  // Detectar campos nulos
   detectarNull(busqueda) {
     if (busqueda != null) {
       return true;

@@ -110,7 +110,7 @@ async function modificaDoc(req, res) {
     let newData = req.body;
     let importe = newData.importe;
 
-    // Control d nulos, indefinidos y campo numérico
+    // Control de nulos, indefinidos y campo numérico
     if (
       id == null ||
       importe == null ||
@@ -127,7 +127,7 @@ async function modificaDoc(req, res) {
     const frutas = await collection.findOne(req.params.nombre);
 
     await collection.updateOne(
-      { id: parseInt(id) },
+      { nombre: id },
       { $set: { importe: importe } }
     );
     res.json("Modificación exitosa");
@@ -150,7 +150,8 @@ async function altaDoc(req, res) {
     let obj = req.body;
     let myId = req.body.id;
     let name = req.body.nombre;
-
+    
+    // Control validez de id y nombre
     if (
       (obj.id == null && obj.name == null) ||
       (obj.id == undefined && obj.name == undefined)

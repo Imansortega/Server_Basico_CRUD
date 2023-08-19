@@ -1,7 +1,7 @@
 /* 
 Esta función evalua la cantidad de documentos que hay en una colección y le pone
-al documento cuyo nombre se pasa como argumento el número de id igual a 
-dicho número.
+al documento a dar de alta, cuyo nombre se pasa como argumento en el body,
+el número de id igual a nro de documentos + 1.
 Solo para ser llamado después de la creación de un documento en el controlador
 */
 const dotenv = require("dotenv");
@@ -18,7 +18,6 @@ module.exports = {
       console.log(name, " - ", myId)
       await client.connect();
       const collection = client.db("Pruebas").collection("Frutas");
-
       const total = await collection.countDocuments();
       const IdRepetido = await collection.findOne({ id: myId });
       const NombreRepetido = await collection.findOne({ nombre: name });
