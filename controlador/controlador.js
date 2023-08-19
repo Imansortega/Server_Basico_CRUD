@@ -48,12 +48,12 @@ async function singleNameSearch(req, res) {
     const collection = client.db("Pruebas").collection("Frutas");
     const frutas = await collection.findOne(req.params);  
     if (frutas == null)  {
-      res.status(404).json("No se encontró su búsqueda")
+      res.status(404).json("No hay resultados de su búsqueda")
     } else {
     res.json(frutas);
     }
   } catch (error) {
-    res.status(500).json("singleNameSearch: Error del servidor" );
+    res.status(500).json({error: "singleNameSearch: Error del servidor"});
   } finally {
     await client.close();
   }
@@ -71,19 +71,12 @@ async function busquedaParcial(req, res) {
     console.log("singleNameSearch: Conexión exitosa a la BD !");
     const collection = client.db("Pruebas").collection("Frutas");
     const frutas = await collection.find({ nombre: { $regex: reg } }).toArray();
-
+    if (frutas.length == 0)  {
+      res.status(404).json("No hay resultados de su búsqueda")
+    } else {
     res.json(frutas);
-    
-  } catch (error) {
-    if (frutas.length === 0) {
-      console.log("singleNameSearch: No se encontro un resultado -->",frutas.length)
-      res.status(404).res.json("No se encontró su búsqueda")
-    } else {   
-      console.log(frutas.length)
-      res.json(frutas);
     }
-    console.error("busquedaParcial: Error al acceder la base");
-    
+  } catch (error) {
     res.status(500).json({ error: "busquedaParcial: Error del servidor" });
   } finally {
     await client.close();
