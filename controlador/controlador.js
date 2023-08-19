@@ -3,6 +3,7 @@ const check = require("../Utils/poneElId");
 
 const dotenv = require("dotenv");
 dotenv.config();
+
 const PORT = process.env.PORT;
 const uri = process.env.MONGODB_URISTRING;
 
@@ -16,73 +17,87 @@ async function casa(req, res) {
 
 // Listado completo.
 async function listado(req, res) {
+
   try {
     await client.connect();
     console.log("listado: Conexión exitosa a la BD !");
     const collection = client.db("Pruebas").collection("Frutas");
     const frutas = await collection.find().toArray();
+
     if (frutas == null)
       res.status(404).res.status(404).json("No se encontró su búsqueda");
-    res.json(frutas);
-    // Informe del query
-    console.log("El query --> Todos los documentos");
-    const total = await collection.countDocuments();
-    console.log("Total de documentos --> ", total, "\n");
-  } catch (error) {
-    console.error("Listado: Error al acceder la base");
-    res.status(500).json({ error: "Listado: Error del servidor" });
-  } finally {
+      res.json(frutas);
+  } 
+  
+  catch (error) {
+    console.error("Listado: Error del servidor");
+    res.status(500).json("Listado: Error del servidor");
+  } 
+  finally {
     await client.close();
   }
 }
 
-// Busca nombre exacto, es case sensitive
+// Busca nombre exacto, es case sensitive, retorna la primera ocurrencia
 async function singleNameSearch(req, res) {
+
+  // Valida que el texto sea alfabético
   if (!validar.validarTextInputs(req.params.nombre)) {
     res.status(400).send("Nombre inválido");
     return;
   }
+
   try {
     await client.connect();
     console.log("singleNameSearch: Conexión exitosa a la BD !");
     const collection = client.db("Pruebas").collection("Frutas");
-    const frutas = await collection.findOne(req.params);  
-    if (frutas == null)  {
-      res.status(404).json("No hay resultados de su búsqueda")
+    const frutas = await collection.findOne(req.params);
+
+    if (frutas == null) {
+      res.status(404).json("No hay resultados de su búsqueda");
     } else {
-    res.json(frutas);
+      res.json(frutas);
     }
-  } catch (error) {
-    res.status(500).json({error: "singleNameSearch: Error del servidor"});
-  } finally {
+  } 
+  catch (error) {
+    res.status(500).json({ error: "singleNameSearch: Error del servidor" });
+  } 
+  finally {
     await client.close();
   }
 }
 
 // Búsqueda parcial, es case sensitive
 async function busquedaParcial(req, res) {
+
+  // Valida que el texto sea alfabético
   if (!validar.validarTextInputs(req.params.parcial)) {
     res.status(400).send("Nombre inválido");
     return;
   }
+
   try {
     var reg = new RegExp(req.params.parcial);
     await client.connect();
     console.log("singleNameSearch: Conexión exitosa a la BD !");
     const collection = client.db("Pruebas").collection("Frutas");
     const frutas = await collection.find({ nombre: { $regex: reg } }).toArray();
-    if (frutas.length == 0)  {
-      res.status(404).json("No hay resultados de su búsqueda")
+
+    if (frutas.length == 0) {
+      res.status(404).json("No hay resultados de su búsqueda");
     } else {
-    res.json(frutas);
+      res.json(frutas);
     }
-  } catch (error) {
+  } 
+  
+  catch (error) {
     res.status(500).json({ error: "busquedaParcial: Error del servidor" });
   } finally {
     await client.close();
   }
 }
 
+// Modifica el precio de un documento solamente
 async function modificaDoc(req, res) {
   try {
     await client.connect();
@@ -93,11 +108,13 @@ async function modificaDoc(req, res) {
 
     if (
       id == null ||
-      newData.importe == null ||
+      importe == null ||
       id == undefined ||
-      newData.importe == undefined
-    ) {
-      res.status(400).send("Modifica: Datos vacios o erroneos !");
+      importe == undefined ||
+      validar.validarNumberInputs(toString(importe))
+    )
+    {
+      res.status(400).send("ModificaDoc: Datos vacios o erroneos !");
       return;
     }
 
@@ -105,19 +122,21 @@ async function modificaDoc(req, res) {
     const frutas = await collection.findOne(req.params.nombre);
 
     await collection.updateOne(
-      { id: parseInt(frutas.id) },
+      { id: parseInt(id) },
       { $set: { importe: importe } }
     );
-
     res.json("Modificación exitosa");
-  } catch (error) {
-    console.error("modificaDoc: Error al acceder la base");
+  } 
+  catch (error) {
+    console.error("modificaDoc: Error del servidor");
     res.status(500).json({ error: "modificaDoc: Error del servidor" });
-  } finally {
+  } 
+  finally {
     await client.close();
   }
 }
 
+// Alta de un nuevo producto/documento
 async function altaDoc(req, res) {
   try {
     await client.connect();

@@ -1,8 +1,12 @@
+
+/* 
+  Server_Basico_CRUD ver. 1.0
+  Ignacio Manso 19/08/2023
+ */
 const {
   casa,
   listado,
   singleNameSearch,
-  busquedaEstandard,
   busquedaParcial,
   modificaDoc,
   altaDoc,
@@ -16,27 +20,36 @@ if (dotenv.error) {
 }
 const PORT = process.env.PORT;
 
-const express = require("express"); // Es un "Import"
-const app = express(); // instanciamos un objet "app" de la "clase" express
+const express = require("express");
+const app = express();
 
-app.use(express.json()); // Middleware para parsear Json
+app.use(express.json());
 
+// Mensaje de bienvenida
 app.get("/", casa);
 
+// Ruteo para listado completo
 app.get("/Frutas", listado);
 
+// Ruteo para búsqueda individual. Retorna primera coincidencia
 app.get("/Frutas/nombre/:nombre", singleNameSearch);
 
+// Filtro/Búsqueda parcial. Retorna todas las coincidencias
 app.get("/Frutas/parcial/:parcial", busquedaParcial);
 
+// Alta de documentos
 app.post("/Frutas/alta", altaDoc);
 
+// Modifica precio en documentos individuales
 app.patch("/Frutas/modifica/:id", modificaDoc);
 
+// Ruta para paths no definidos o campos vacios
 app.use((req, res) => {
   console.log("Este path ---> ", req.path, " ...Naaaaa");
   if (validar.detectarNull(!req.params.nombre)) {
-    res.status(404).send("El campo está vacío, incompleto o la pagina no existe");
+    res
+      .status(404)
+      .send("El campo está vacío, incompleto o la pagina no existe");
   } else {
     res.status(404).send("La página buscada no existe");
   }

@@ -1,16 +1,20 @@
 module.exports = {
   validarTextInputs(query) {
-    //console.log(query);
-    var ExpRegSoloLetras = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$";
+    let ExpRegSoloLetras = "^[a-zA-ZñÑáéíóúÁÉÍÓÚ]+$";
+    // Distinto de NULL, hay match ---> true !!
     if (query.match(ExpRegSoloLetras) != null) {
       return true;
-    } else {
+    } else {  
       return false;
     }
   },
   validarNumberInputs(numero) {
-    var ExpRegSoloNumeros = "^[0-9]+$";
-    return NumeroValido.match(ExpRegSoloNumeros);
+    let ExpRegSoloNumeros = "^[0-9]+$";
+    if (numero.match(ExpRegSoloNumeros) != null) {  
+      return true;
+    } else {
+      return false;
+    }
   },
   
   detectarNull(busqueda) {
@@ -44,3 +48,5 @@ module.exports = {
 };
 
 //module.exports = (validarRutas, validarTextInputs, validarNumberInputs)
+
+
