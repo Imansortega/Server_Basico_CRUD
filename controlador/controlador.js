@@ -20,7 +20,6 @@ async function casa(req, res) {
 
 // Listado completo.
 async function listado(req, res) {
-
   try {
     await client.connect();
     console.log("listado: Conexión exitosa a la BD !");
@@ -29,21 +28,17 @@ async function listado(req, res) {
 
     if (frutas == null)
       res.status(404).res.status(404).json("No se encontró su búsqueda");
-      res.json(frutas);
-  } 
-  
-  catch (error) {
+    res.json(frutas);
+  } catch (error) {
     console.error("Listado: Error del servidor");
     res.status(500).json("Listado: Error del servidor");
-  } 
-  finally {
+  } finally {
     await client.close();
   }
 }
 
 // Busca nombre exacto, es case sensitive, retorna la primera ocurrencia
 async function singleNameSearch(req, res) {
-
   // Valida que el texto sea alfabético
   if (!validar.validarTextInputs(req.params.nombre)) {
     res.status(400).send("Nombre inválido");
@@ -61,18 +56,15 @@ async function singleNameSearch(req, res) {
     } else {
       res.json(frutas);
     }
-  } 
-  catch (error) {
+  } catch (error) {
     res.status(500).json({ error: "singleNameSearch: Error del servidor" });
-  } 
-  finally {
+  } finally {
     await client.close();
   }
 }
 
 // Búsqueda parcial, es case sensitive
 async function busquedaParcial(req, res) {
-
   // Valida que el texto sea alfabético
   if (!validar.validarTextInputs(req.params.parcial)) {
     res.status(400).send("Nombre inválido");
@@ -91,9 +83,7 @@ async function busquedaParcial(req, res) {
     } else {
       res.json(frutas);
     }
-  } 
-  
-  catch (error) {
+  } catch (error) {
     res.status(500).json({ error: "busquedaParcial: Error del servidor" });
   } finally {
     await client.close();
@@ -102,13 +92,13 @@ async function busquedaParcial(req, res) {
 
 // Modifica solo el precio de un documento individual
 async function modificaDoc(req, res) {
-
   try {
     await client.connect();
     console.log("modificaDoc: Conexión exitosa a la BD !");
     var id = req.params.id;
     let newData = req.body;
     let importe = newData.importe;
+    let name = req.params.nombre;
 
     // Control de nulos, indefinidos y campo numérico
     if (
@@ -117,8 +107,7 @@ async function modificaDoc(req, res) {
       id == undefined ||
       importe == undefined ||
       validar.validarNumberInputs(toString(importe))
-    )
-    {
+    ) {
       res.status(400).send("ModificaDoc: Datos vacios o erroneos !");
       return;
     }
@@ -126,60 +115,52 @@ async function modificaDoc(req, res) {
     const collection = client.db("Pruebas").collection("Frutas");
     const frutas = await collection.findOne(req.params.nombre);
 
-    await collection.updateOne(
-      { nombre: id },
-      { $set: { importe: importe } }
-    );
+    await collection.updateOne({ nombre: id }, { $set: { importe: importe } });
     res.json("Modificación exitosa");
-  } 
-  catch (error) {
+
+  } catch (error) {
     console.error("modificaDoc: Error del servidor");
     res.status(500).json({ error: "modificaDoc: Error del servidor" });
-  } 
-  finally {
+  } finally {
     await client.close();
   }
 }
 
 // Alta de un nuevo producto/documento
 async function altaDoc(req, res) {
-
   try {
     await client.connect();
     console.log("altaDoc: Conexión exitosa a la BD !");
     let obj = req.body;
     let myId = req.body.id;
     let name = req.body.nombre;
-    
-    // Control validez de id y nombre
-    if (
-      (obj.id == null && obj.name == null) ||
-      (obj.id == undefined && obj.name == undefined)
-    ) {
+    let importe = req.body.importe
+    let stock = req.body.stock
+
+    // Control de nulos, indefinidos y campo numérico
+    /* console.log(myId," - ", name, " - ", importe, " - ", stock);
+    console.log(validar.validaCampos(myId,name,importe,stock)); */
+    if (!validar.validaCampos(myId,name,importe,stock)) {
       res.status(400).send("Alta: Datos vacios o erroneos !");
       return;
     }
 
-    const collection = client.db("Pruebas").collection("Frutas");
-    const total = (await collection.countDocuments()) + 1;
-
-    if (!(await check.repetidos(name, myId))) {
-      const frutas = await collection.insertOne(obj);
-      await collection.updateOne(
-        { nombre: name },
-        { $set: { id: parseInt(total) } }
-      );
-      res.json(obj);
-    } else {
-      console.log("else");
-      res.status(409).json("El id o nombre ya existen");
+    // Controlo si en el body, el nombre no esté repetido
+    if (await check.repetidos(name)) {
+      console.log("El nombre ya existe");
+      res.status(409).json("El nombre ya existe");
+      return;
     }
-  } 
-  catch (error) {
-    console.error("altaDoc: Error al acceder la base");
+
+    const collection = client.db("Pruebas").collection("Frutas");
+    obj.id = await check.generaId();
+    await collection.insertOne(obj);
+    res.status(200).json(obj);
+
+  } catch (error) {
+    console.error(error, "altaDoc: Error al acceder la base");
     res.status(500).json({ error: "altaDoc: Error del servidor" });
-  } 
-  finally {
+  } finally {
     await client.close();
   }
 }

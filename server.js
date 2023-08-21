@@ -43,7 +43,7 @@ app.get("/Frutas/parcial/:parcial", busquedaParcial);
 */
 app.post("/Frutas/alta", altaDoc);
 
-// Modifica precio en documentos individuales
+// Modifica precio en documentos individuales a partir del nombre de la fruta
 app.patch("/Frutas/modifica/:id", modificaDoc);
 
 // Ruta para paths no definidos o campos vacios
