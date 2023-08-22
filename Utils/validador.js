@@ -37,7 +37,7 @@ module.exports = {
   validaCampos(myId, name,importe,stock) { 
     if (
       myId == null || name == null ||
-      importe == undefined || stock == undefined ||
+      importe == null || stock == null ||
       myId == undefined || name == undefined ||
       importe == undefined || stock == undefined ||
       !this.validarTextInputs(name)
@@ -52,13 +52,15 @@ module.exports = {
 
   validaIdImporte(id, importe) {
     if (
-      myId == null || name == null ||
-      importe == null || stock == null ||
-      myId == undefined || name == undefined ||
-      importe == undefined || stock == undefined ||
-      !validar.validarTextInputs(name)
+      id == null || importe == null || 
+      id == undefined || importe == undefined || 
+      !this.validarTextInputs(id) 
     ) {
+      console.log("validaIdImporte: False. Texto NO OK ")
       return false;
+    } else {
+      console.log("validaIdImporte: True. Texto OK ")
+      return true
     }
   },
 

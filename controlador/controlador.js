@@ -95,27 +95,19 @@ async function modificaDoc(req, res) {
   try {
     await client.connect();
     console.log("modificaDoc: Conexión exitosa a la BD !");
-    var id = req.params.id;
+    let id = req.params.id;
     let newData = req.body;
     let importe = newData.importe;
-    let name = req.params.nombre;
-
+   
     // Control de nulos, indefinidos y campo numérico
-    if (
-      id == null ||
-      importe == null ||
-      id == undefined ||
-      importe == undefined ||
-      validar.validarNumberInputs(toString(importe))
-    ) {
+    if (!validar.validaIdImporte(id,importe)) {
       res.status(400).send("ModificaDoc: Datos vacios o erroneos !");
       return;
     }
 
     const collection = client.db("Pruebas").collection("Frutas");
-    const frutas = await collection.findOne(req.params.nombre);
-
     await collection.updateOne({ nombre: id }, { $set: { importe: importe } });
+    
     res.json("Modificación exitosa");
 
   } catch (error) {

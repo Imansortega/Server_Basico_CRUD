@@ -1,7 +1,7 @@
 
 /* 
   Server_Basico_CRUD ver. 1.0
-  Ignacio Manso 19/08/2023
+  Ignacio Manso 22/08/2023
  */
 const {
   casa,
