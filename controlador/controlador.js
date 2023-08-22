@@ -26,9 +26,11 @@ async function listado(req, res) {
     const collection = client.db("Pruebas").collection("Frutas");
     const frutas = await collection.find().toArray();
 
-    if (frutas == null)
-      res.status(404).res.status(404).json("No se encontró su búsqueda");
+    if (frutas == null) {
+    res.status(404).json("No hay resultados de su búsqueda");
+  } else {
     res.json(frutas);
+  }
   } catch (error) {
     console.error("Listado: Error del servidor");
     res.status(500).json("Listado: Error del servidor");
@@ -130,8 +132,6 @@ async function altaDoc(req, res) {
     let stock = req.body.stock
 
     // Control de nulos, indefinidos y campo numérico
-    /* console.log(myId," - ", name, " - ", importe, " - ", stock);
-    console.log(validar.validaCampos(myId,name,importe,stock)); */
     if (!validar.validaCampos(myId,name,importe,stock)) {
       res.status(400).send("Alta: Datos vacios o erroneos !");
       return;
