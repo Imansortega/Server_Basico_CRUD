@@ -34,7 +34,7 @@ module.exports = {
     }
   },
 
-  validaCampos(myId, name,importe,stock) {
+  validaCampos(myId, name,importe,stock) { 
     if (
       myId == null || name == null ||
       importe == undefined || stock == undefined ||
