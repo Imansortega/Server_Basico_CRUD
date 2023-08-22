@@ -37,7 +37,7 @@ module.exports = {
   validaCampos(myId, name,importe,stock) {
     if (
       myId == null || name == null ||
-      myId == undefined || name == undefined ||
+      importe == undefined || stock == undefined ||
       myId == undefined || name == undefined ||
       importe == undefined || stock == undefined ||
       !this.validarTextInputs(name)
